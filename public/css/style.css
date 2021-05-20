@@ -1,0 +1,22 @@
+:root {
+    --brand-color: #013755;
+}
+
+.navbar {
+    background-color: var(--brand-color);
+}
+
+.btn-primary {
+    background-color: var(--brand-color);
+    border-color: var(--brand-color);
+}
+
+form#user form label{
+	display:block;
+}
+
+form#user form label span {
+	width: 130px;
+	display: inline-block;
+	margin: 5px 0;
+}
