@@ -1,0 +1,92 @@
+############
+# DEFAULTS #
+############
+# Setup includes
+include:
+  - local: .gitlab-ci-php.yml
+  - local: .gitlab-ci-semantic-release.yml
+# Setup stages
+stages:
+  - test
+  - publish
+#############
+# TEMPLATES #
+#############
+# PHP template
+.template_php:
+  image: registry.gitlab.com/creativecow/docker-api/php-ci:latest
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - vendor/
+    policy: pull
+  before_script:
+    - composer global config --auth gitlab-token.gitlab.com $GITLAB_TOKEN
+    - composer install --classmap-authoritative --no-interaction --no-progress --optimize-autoloader --prefer-dist
+# Create semantic release template
+.template_semantic_release:
+  resource_group: release
+  image: registry.gitlab.com/creativecow/docker-angular/node-ci:latest
+  stage: publish
+  script:
+    - semantic-release
+################
+# STAGE - TEST #
+################
+# Test latest versions
+test_latest:
+  extends: .template_php
+  cache:
+    policy: pull-push
+  stage: test
+  rules:
+    - if: $CI_MERGE_REQUEST_IID && $CI_COMMIT_REF_PROTECTED
+    - if: $CI_COMMIT_BRANCH && $CI_COMMIT_REF_PROTECTED
+  script:
+    - composer validate
+    - composer check
+  artifacts:
+    untracked: true
+    paths:
+      - docs/
+    reports:
+      cobertura: docs/logs/cobertura.xml
+      codequality: docs/logs/gl-code-quality-report.json
+      junit: docs/logs/junit.xml
+# Test lowest versions
+test_lowest:
+  extends: .template_php
+  stage: test
+  rules:
+    - if: $CI_MERGE_REQUEST_IID && $CI_COMMIT_REF_PROTECTED
+    - if: $CI_COMMIT_BRANCH && $CI_COMMIT_REF_PROTECTED
+  script:
+    - composer update --classmap-authoritative --no-interaction --no-progress --optimize-autoloader --prefer-dist --prefer-lowest --prefer-stable
+    - composer check
+###################
+# STAGE - PUBLISH #
+###################
+# Create semantic release
+release:
+  extends: .template_semantic_release
+  needs:
+    - job: test_latest
+      artifacts: false
+    - job: test_lowest
+      artifacts: false
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+# Publish package to gitlab
+publish:
+  resource_group: publish
+  image: curlimages/curl:latest
+  stage: publish
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - version=$([[ -z "$CI_COMMIT_TAG" ]] && echo "branch=$CI_COMMIT_BRANCH" || echo "tag=$CI_COMMIT_TAG")
+    - response$(curl -s -w "\n%{http_code}" --data $version https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/composer?job_token=$CI_JOB_TOKEN)
+    - code=$(echo "$response" | tail -n 1)
+    - body=$(echo "$response" | head -n 1)
+    - if [ $code -eq 201 ]; then echo "Package created - Code $code - $body"; else echo "Could not create package - Code $code - $body"; exit 1; fi
