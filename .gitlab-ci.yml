@@ -86,7 +86,7 @@ publish:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
     - version=$([[ -z "$CI_COMMIT_TAG" ]] && echo "branch=$CI_COMMIT_BRANCH" || echo "tag=$CI_COMMIT_TAG")
-    - response$(curl -s -w "\n%{http_code}" --data $version https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/composer?job_token=$CI_JOB_TOKEN)
+    - response$(curl -s -w "\n%{http_code}" --data $version https://repo.serenitycms.com/api/v4/projects/$CI_PROJECT_ID/packages/composer?job_token=$CI_JOB_TOKEN)
     - code=$(echo "$response" | tail -n 1)
     - body=$(echo "$response" | head -n 1)
     - if [ $code -eq 201 ]; then echo "Package created - Code $code - $body"; else echo "Could not create package - Code $code - $body"; exit 1; fi
