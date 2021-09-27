@@ -1,6 +1,6 @@
 {
-    "name": "tecsense-limited/serenity-cms",
-    "description": "CMS developed with content creators in mind.",
+    "name": "SerenityDevelopment/Serenity-CMS",
+    "description": "",
     "type": "project",
     "license": "BSD-3-Clause",
     "keywords": [
@@ -8,46 +8,41 @@
         "mvc",
         "skeleton",
         "framework",
-        "serenity",
-        "content creator cms",
+        "CMS",
         "cms",
         "content management system",
-        "youtuber",
-        "twitch",
-        "serenity cms",
-        "content creation cms",
-        "twitch module",
-        "glimesh module"
+        "Content Management System",
+        "CMS for Content Creators",
+        "cms for content creators"
     ],
     "homepage": "https://serenitycms.com",
     "repositories": [
     	{
     		"type": "vcs",
-    		"url": "https://github.com/Tecsense-Limited/Serenity-CMS"
+    		"url": "https://repo.serenitycms.com/serenitydev/serenity-cms/"
     	}
     ],
     "require": {
-        "php": "^7.3",
-        "laminas/laminas-component-installer": "^1.0 || ^2.1",
+        "php": "^7.3 || ~8.0.0",
+        "laminas/laminas-component-installer": "^2.4",
         "laminas/laminas-development-mode": "^3.2",
         "laminas/laminas-mvc": "^3.1.1",
-        "laminas/laminas-cache": "^2.9.0",
-        "laminas/laminas-db": "^2.10.0",
-        "laminas/laminas-mvc-form": "^1.0",
-        "laminas/laminas-json": "^3.1.2",
-        "laminas/laminas-log": "^2.11",
+        "laminas/laminas-cache": "^2.11.1",
+        "laminas/laminas-db": "^2.12.0",
+        "laminas/laminas-mvc-form": "^1.1.0",
+        "laminas/laminas-json": "^3.2",
+        "laminas/laminas-log": "^2.13.1",
         "laminas/laminas-mvc-console": "^1.2.0",
-        "laminas/laminas-mvc-i18n": "^1.1.1",
-        "laminas/laminas-mvc-plugins": "^1.0.1",
+        "laminas/laminas-mvc-i18n": "^1.2.0",
+        "laminas/laminas-mvc-plugins": "^1.1.0",
         "laminas/laminas-psr7bridge": "^1.2.0",
-        "laminas/laminas-session": "^2.9.1",
-        "laminas/laminas-di": "^3.1.1",
-        "divix1988/laminas-smarty-module": "^1.0"
+        "laminas/laminas-session": "^2.10.0",
+        "laminas/laminas-di": "^3.2.2"
     },
     "autoload": {
         "psr-4": {
-            "Application\\": "module/Application/src/",
-            "Utils\\": "module/Utils/src/Utils"
+            "Application\\": "module/Application/src/"
+           	
         }
     },
     "autoload-dev": {
@@ -80,7 +75,7 @@
         "test": "Run unit tests."
     },
     "require-dev": {
-        "laminas/laminas-developer-tools": "^2.0.1",
-        "laminas/laminas-test": "^3.3.0"
+        "laminas/laminas-developer-tools": "^2.1.1",
+        "laminas/laminas-test": "^3.4.2"
     }
 }
